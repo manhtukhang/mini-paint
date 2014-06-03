@@ -1,5 +1,4 @@
 *Makefile
 lib*
-plugins/build/
 minipaint-v1.0
-build*/
+*build*/
