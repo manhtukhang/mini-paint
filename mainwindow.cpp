@@ -1,44 +1,3 @@
-/****************************************************************************
-**
-** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
-**
-** This file is part of the examples of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:BSD$
-** You may use this file under the terms of the BSD license as follows:
-**
-** "Redistribution and use in source and binary forms, with or without
-** modification, are permitted provided that the following conditions are
-** met:
-**   * Redistributions of source code must retain the above copyright
-**     notice, this list of conditions and the following disclaimer.
-**   * Redistributions in binary form must reproduce the above copyright
-**     notice, this list of conditions and the following disclaimer in
-**     the documentation and/or other materials provided with the
-**     distribution.
-**   * Neither the name of Digia Plc and its Subsidiary(-ies) nor the names
-**     of its contributors may be used to endorse or promote products derived
-**     from this software without specific prior written permission.
-**
-**
-** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-** "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-** LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-** A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-** OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-** SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-** LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-** DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-** THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
-
-
 #include "interfaces.h"
 #include "mainwindow.h"
 #include "paintarea.h"
@@ -62,6 +21,7 @@ MainWindow::MainWindow() :
     paintArea(new PaintArea),
     scrollArea(new QScrollArea)
 {
+    undoStack = new QUndoStack(this);
     scrollArea->setBackgroundRole(QPalette::Dark);
     scrollArea->setWidget(paintArea);
     setCentralWidget(scrollArea);
@@ -70,7 +30,7 @@ MainWindow::MainWindow() :
     createMenus();
     loadPlugins();
 
-    setWindowTitle(tr("Plug & Paint"));
+    setWindowTitle(tr("Mini Paint"));
 
     if (!brushActionGroup->actions().isEmpty())
         brushActionGroup->actions().first()->trigger();
@@ -81,12 +41,12 @@ MainWindow::MainWindow() :
 void MainWindow::open()
 {
     const QString fileName = QFileDialog::getOpenFileName(this,
-                                                          tr("Open File"),
+                                                          tr("Mở tệp"),
                                                           QDir::currentPath());
     if (!fileName.isEmpty()) {
         if (!paintArea->openImage(fileName)) {
-            QMessageBox::information(this, tr("Plug & Paint"),
-                                     tr("Cannot load %1.").arg(fileName));
+            QMessageBox::information(this, tr("Mini Paint"),
+                                     tr("Không thể mở %1.").arg(fileName));
             return;
         }
         paintArea->adjustSize();
@@ -97,13 +57,23 @@ bool MainWindow::saveAs()
 {
     const QString initialPath = QDir::currentPath() + "/untitled.png";
 
-    const QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"),
+    const QString fileName = QFileDialog::getSaveFileName(this, tr("Lưu"),
                                                           initialPath);
     if (fileName.isEmpty()) {
         return false;
     } else {
         return paintArea->saveImage(fileName, "png");
     }
+}
+
+void MainWindow::undo()
+{
+
+}
+
+void MainWindow::redo()
+{
+
 }
 
 void MainWindow::brushColor()
@@ -116,15 +86,14 @@ void MainWindow::brushColor()
 void MainWindow::brushWidth()
 {
     bool ok;
-    const int newWidth = QInputDialog::getInt(this, tr("Plug & Paint"),
-                                              tr("Select brush width:"),
+    const int newWidth = QInputDialog::getInt(this, tr("Mini Paint"),
+                                              tr("Kích thước cọ vẽ:"),
                                               paintArea->brushWidth(),
                                               1, 50, 1, &ok);
     if (ok)
         paintArea->setBrushWidth(newWidth);
 }
 
-//! [0]
 void MainWindow::changeBrush()
 {
     QAction *action = qobject_cast<QAction *>(sender());
@@ -133,9 +102,7 @@ void MainWindow::changeBrush()
 
     paintArea->setBrush(iBrush, brush);
 }
-//! [0]
 
-//! [1]
 void MainWindow::insertShape()
 {
     QAction *action = qobject_cast<QAction *>(sender());
@@ -145,9 +112,7 @@ void MainWindow::insertShape()
     if (!path.isEmpty())
         paintArea->insertShape(path);
 }
-//! [1]
 
-//! [2]
 void MainWindow::applyFilter()
 {
     QAction *action = qobject_cast<QAction *>(sender());
@@ -158,86 +123,95 @@ void MainWindow::applyFilter()
                                               this);
     paintArea->setImage(image);
 }
-//! [2]
 
 void MainWindow::about()
 {
-   QMessageBox::about(this, tr("About Plug & Paint"),
-            tr("The <b>Plug & Paint</b> example demonstrates how to write Qt "
-               "applications that can be extended through plugins."));
+   QMessageBox::about(this, tr("Thông tin về Mini Paint"),
+            tr("<b>Mini Paint</b> là chương trình biên tập hình ảnh đơn giản. "
+               "Có sử dụng các plugin ở dạng modul rời"));
 }
 
-//! [3]
 void MainWindow::aboutPlugins()
 {
     PluginDialog dialog(pluginsDir.path(), pluginFileNames, this);
     dialog.exec();
 }
-//! [3]
 
 void MainWindow::createActions()
 {
-    openAct = new QAction(tr("&Open..."), this);
+    openAct = new QAction(tr("&Mở..."), this);
     openAct->setShortcuts(QKeySequence::Open);
     connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
 
-    saveAsAct = new QAction(tr("&Save As..."), this);
+    saveAsAct = new QAction(tr("&Lưu..."), this);
     saveAsAct->setShortcuts(QKeySequence::SaveAs);
     connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
 
-    exitAct = new QAction(tr("E&xit"), this);
+    undoAct = new QAction(tr("Hủy thao tác"), this);
+    undoAct->setShortcuts(QKeySequence::Undo);
+    connect(undoAct, SIGNAL(triggered()), this, SLOT(undo()));
+
+    redoAct = new QAction(tr("Làm lại"), this);
+    redoAct->setShortcuts(QKeySequence::Redo);
+    connect(redoAct, SIGNAL(triggered()), this, SLOT(redo()));
+
+
+    exitAct = new QAction(tr("&Thoát"), this);
     exitAct->setShortcuts(QKeySequence::Quit);
     connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
 
-    brushColorAct = new QAction(tr("&Brush Color..."), this);
+    brushColorAct = new QAction(tr("Mà&u cọ vẽ..."), this);
     connect(brushColorAct, SIGNAL(triggered()), this, SLOT(brushColor()));
 
-    brushWidthAct = new QAction(tr("&Brush Width..."), this);
+    brushWidthAct = new QAction(tr("&Kích thước cọ vẽ..."), this);
     connect(brushWidthAct, SIGNAL(triggered()), this, SLOT(brushWidth()));
 
     brushActionGroup = new QActionGroup(this);
 
-    aboutAct = new QAction(tr("&About"), this);
+    aboutAct = new QAction(tr("&Về Mini Paint"), this);
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
 
-    aboutQtAct = new QAction(tr("About &Qt"), this);
+    aboutQtAct = new QAction(tr("Về &Qt"), this);
     connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
-    aboutPluginsAct = new QAction(tr("About &Plugins"), this);
+    aboutPluginsAct = new QAction(tr("Về các &Plugin"), this);
     connect(aboutPluginsAct, SIGNAL(triggered()), this, SLOT(aboutPlugins()));
 }
 
 void MainWindow::createMenus()
 {
-    fileMenu = menuBar()->addMenu(tr("&File"));
+    fileMenu = menuBar()->addMenu(tr("&Tệp"));
     fileMenu->addAction(openAct);
     fileMenu->addAction(saveAsAct);
     fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
 
-    brushMenu = menuBar()->addMenu(tr("&Brush"));
+    editMenu = menuBar()->addMenu(tr("&Biên tập"));
+    editMenu->addAction(undoAct);
+    editMenu->addAction(redoAct);
+
+
+    brushMenu = menuBar()->addMenu(tr("&Cọ vẽ"));
     brushMenu->addAction(brushColorAct);
     brushMenu->addAction(brushWidthAct);
     brushMenu->addSeparator();
 
-    shapesMenu = menuBar()->addMenu(tr("&Shapes"));
+    shapesMenu = menuBar()->addMenu(tr("&Hình"));
 
-    filterMenu = menuBar()->addMenu(tr("&Filter"));
+    filterMenu = menuBar()->addMenu(tr("Bộ &lọc"));
 
     menuBar()->addSeparator();
 
-    helpMenu = menuBar()->addMenu(tr("&Help"));
+    helpMenu = menuBar()->addMenu(tr("&Giúp đỡ"));
     helpMenu->addAction(aboutAct);
     helpMenu->addAction(aboutQtAct);
     helpMenu->addAction(aboutPluginsAct);
 }
 
-//! [4]
 void MainWindow::loadPlugins()
 {
     foreach (QObject *plugin, QPluginLoader::staticInstances())
         populateMenus(plugin);
-//! [4] //! [5]
 
     pluginsDir = QDir(qApp->applicationDirPath());
 
@@ -251,30 +225,22 @@ void MainWindow::loadPlugins()
         pluginsDir.cdUp();
     }
 #endif
-    pluginsDir.cd("plugins");
-//! [5]
+    // pluginsDir.cd("plugins");
 
-//! [6]
     foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
         QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
         QObject *plugin = loader.instance();
         if (plugin) {
             populateMenus(plugin);
             pluginFileNames += fileName;
-//! [6] //! [7]
         }
-//! [7] //! [8]
     }
-//! [8]
 
-//! [9]
     brushMenu->setEnabled(!brushActionGroup->actions().isEmpty());
     shapesMenu->setEnabled(!shapesMenu->actions().isEmpty());
     filterMenu->setEnabled(!filterMenu->actions().isEmpty());
 }
-//! [9]
 
-//! [10]
 void MainWindow::populateMenus(QObject *plugin)
 {
     BrushInterface *iBrush = qobject_cast<BrushInterface *>(plugin);
@@ -290,7 +256,6 @@ void MainWindow::populateMenus(QObject *plugin)
     if (iFilter)
         addToMenu(plugin, iFilter->filters(), filterMenu, SLOT(applyFilter()));
 }
-//! [10]
 
 void MainWindow::addToMenu(QObject *plugin, const QStringList &texts,
                            QMenu *menu, const char *member,

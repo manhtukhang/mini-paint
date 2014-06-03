@@ -44,11 +44,13 @@
 #include <QDir>
 #include <QMainWindow>
 #include <QStringList>
+#include <QUndoCommand>
 
 QT_BEGIN_NAMESPACE
 class QAction;
 class QActionGroup;
 class QMenu;
+class QUndoStack;
 class QScrollArea;
 QT_END_NAMESPACE
 class PaintArea;
@@ -63,6 +65,8 @@ public:
 private slots:
     void open();
     bool saveAs();
+    void undo();
+    void redo();
     void brushColor();
     void brushWidth();
     void changeBrush();
@@ -85,6 +89,7 @@ private:
     QStringList pluginFileNames;
 
     QMenu *fileMenu;
+    QMenu *editMenu;
     QMenu *brushMenu;
     QMenu *shapesMenu;
     QMenu *filterMenu;
@@ -93,11 +98,15 @@ private:
     QAction *openAct;
     QAction *saveAsAct;
     QAction *exitAct;
+    QAction *undoAct;
+    QAction *redoAct;
     QAction *brushWidthAct;
     QAction *brushColorAct;
     QAction *aboutAct;
     QAction *aboutQtAct;
     QAction *aboutPluginsAct;
+
+    QUndoStack *undoStack;
 };
 
 #endif
