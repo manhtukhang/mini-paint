@@ -1,3 +1,4 @@
+
 #include "interfaces.h"
 #include "mainwindow.h"
 #include "paintarea.h"
@@ -73,6 +74,8 @@ bool MainWindow::saveAs()
 }
 
 
+// Phần này chưa hoàn thiện
+/*
 // Hủy bỏ thao tác trước đó
 void MainWindow::undo()
 {
@@ -85,7 +88,7 @@ void MainWindow::redo()
 {
 
 }
-
+*/
 
 // Thay đổi màu cọ vẽ
 void MainWindow::brushColor()
@@ -150,9 +153,17 @@ void MainWindow::applyFilter()
 // Hộp thoại hiển thị thông tin chương trình
 void MainWindow::about()
 {
-   QMessageBox::about(this, tr("Thông tin về Mini Paint"),
-            tr("<b>Mini Paint</b> là chương trình biên tập hình ảnh đơn giản. "
-               "Có sử dụng các plugin ở dạng modul rời"));
+    QMessageBox::about(this, tr("Thông tin về Mini Paint"),
+                       QString("<b>Mini Paint</b> %1: %2 <br> <br> %3: "
+                               "<a href=\"https://github.com/manhtuvjp/mini-paint/\">https://github.com/manhtuvjp/mini-paint</a>"
+                               "<br> <br>Copyleft (ɔ) 2014 - Nhóm phát triển Mini Paint"
+                               "<br> <br>%4:<ul>"
+                               "<li>Khang Mạnh Tử  <a href=\"mailto:manhtuvjp@gmail.com\">manhtuvjp@gmail.com</a></li>"
+                               "<li>Võ Hoài Phong  <a href=\"mailto:hoaiphong95@gmail.com\">hoaiphong95@gmail.com</a></li>"
+                               "</ul>"
+                               "<br> %5")
+                       .arg(tr("phiên bản")).arg("0.1.0").arg(tr("Mã nguồn")).arg(tr("Các tác giả"))
+                       .arg(tr("Vui lòng đóng góp tính năng hoặc lỗi cho nhóm phát triển tại <a href=\"https://github.com/manhtuvjp/mini-paint/issues?milestone=&sort=created&direction=desc&state=open\">Github</a>")));
 }
 
 
@@ -176,6 +187,7 @@ void MainWindow::createActions()
     saveAsAct->setShortcuts(QKeySequence::SaveAs);
     connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
 
+/*
     undoAct = new QAction(tr("Hủy thao tác"), this);
     undoAct->setShortcuts(QKeySequence::Undo);
     connect(undoAct, SIGNAL(triggered()), this, SLOT(undo()));
@@ -183,7 +195,7 @@ void MainWindow::createActions()
     redoAct = new QAction(tr("Làm lại"), this);
     redoAct->setShortcuts(QKeySequence::Redo);
     connect(redoAct, SIGNAL(triggered()), this, SLOT(redo()));
-
+*/
 
     exitAct = new QAction(tr("&Thoát"), this);
     exitAct->setShortcuts(QKeySequence::Quit);
@@ -217,10 +229,11 @@ void MainWindow::createMenus()
     fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
 
+/*
     editMenu = menuBar()->addMenu(tr("&Biên tập"));
     editMenu->addAction(undoAct);
     editMenu->addAction(redoAct);
-
+*/
 
     brushMenu = menuBar()->addMenu(tr("&Cọ vẽ"));
     brushMenu->addAction(brushColorAct);
@@ -229,7 +242,7 @@ void MainWindow::createMenus()
 
     shapesMenu = menuBar()->addMenu(tr("&Hình"));
 
-    filterMenu = menuBar()->addMenu(tr("Bộ &lọc"));
+    filterMenu = menuBar()->addMenu(tr("&Lọc ảnh"));
 
     menuBar()->addSeparator();
 

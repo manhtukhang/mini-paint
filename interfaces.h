@@ -1,4 +1,14 @@
-
+/******************************************************************************
+** Lớp giao diện cho các plugin
+** Đây là lớp trừu tượng, dùng để kế thừa, tránh nhầm lẫn với giao diện
+** tương tác (GUI, CLI, API)
+** 
+** Bao gồm các lớp sau:
+**  - BrushInterface
+**  - ShapeInterface
+**  - FilterInterface
+** Thể hiện của những lớp trên sẽ được cụ thể hóa ở các lớp kế thừa sau này
+*/
 
 #ifndef INTERFACES_H
 #define INTERFACES_H
@@ -16,7 +26,6 @@ class QString;
 class QStringList;
 QT_END_NAMESPACE
 
-//! [0]
 class BrushInterface
 {
 public:
@@ -30,9 +39,7 @@ public:
     virtual QRect mouseRelease(const QString &brush, QPainter &painter,
                                const QPoint &pos) = 0;
 };
-//! [0]
 
-//! [1]
 class ShapeInterface
 {
 public:
@@ -42,9 +49,7 @@ public:
     virtual QPainterPath generateShape(const QString &shape,
                                        QWidget *parent) = 0;
 };
-//! [1]
 
-//! [2]
 class FilterInterface
 {
 public:
@@ -54,23 +59,21 @@ public:
     virtual QImage filterImage(const QString &filter, const QImage &image,
                                QWidget *parent) = 0;
 };
-//! [2]
 
+
+/*
+Phần này hết sức quan trọng
+Là tên để nhận diện các plugin trong chương trình chính khi nạp các plugin
+*/
 QT_BEGIN_NAMESPACE
-//! [3] //! [4]
+
 #define BrushInterface_iid "org.qt.Mini-Paint.BrushInterface"
-
 Q_DECLARE_INTERFACE(BrushInterface, BrushInterface_iid)
-//! [3]
-
 #define ShapeInterface_iid  "org.qt.Mini-Paint.ShapeInterface"
-
 Q_DECLARE_INTERFACE(ShapeInterface, ShapeInterface_iid)
-//! [5]
 #define FilterInterface_iid "org.qt.Mini-Paint.FilterInterface"
-
 Q_DECLARE_INTERFACE(FilterInterface, FilterInterface_iid)
-//! [4] //! [5]
+
 QT_END_NAMESPACE
 
 #endif
