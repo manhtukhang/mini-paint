@@ -81,8 +81,6 @@ void MainWindow::undo()
 {
     if (!fileName.isEmpty()) {
         if (!paintArea->openImage(fileName)) {
-            QMessageBox::information(this, tr("Mini Paint"),
-            tr("Không thể mở %1.").arg(fileName));
             return;
         }
         paintArea->adjustSize();
