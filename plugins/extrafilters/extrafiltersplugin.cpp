@@ -8,7 +8,8 @@
 /*** FilterInterface ***/
 
 // Hàm trả về danh sách các bộ lọc có trong plugin
-QStringList ExtraFiltersPlugin::filters() const {
+QStringList ExtraFiltersPlugin::filters() const
+{
     return QStringList() << tr("Lật dọc")
            << tr("Lật ngang")
            << tr("Làm mờ")
@@ -25,7 +26,8 @@ QStringList ExtraFiltersPlugin::filters() const {
 
 // Hàm dùng lọc ảnh bằng các filter tương ứng
 QImage ExtraFiltersPlugin::filterImage(const QString &filter,
-                                       const QImage &image, QWidget *parent) {
+                                       const QImage &image, QWidget *parent)
+{
     // Chuyển đổi định dạng ảnh sang RGB 32-bit để các hàm làm việc như mong
     // đợi
     QImage original = image.convertToFormat(QImage::Format_RGB32);
