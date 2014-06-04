@@ -6,7 +6,7 @@
  ******************************************************************************
  * Cung cấp các công cụ đơn giản như:                                         *
  *  - Bút vẽ                                                                  *
- *  - Công cụ phun màu dạng sương mụ                                          *
+ *  - Công cụ phun màu dạng sương mù                                          *
  *  - Chèn vào 1 chữ cái ngẫu nhiên trong bảng chữ cái Alphabet               *
  *  - Các hình cơ bản như: hình tròn, ngôi sao, văn bản                       *
  ******************************************************************************/
