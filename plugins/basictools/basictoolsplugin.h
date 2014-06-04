@@ -1,3 +1,8 @@
+/******************************************************************************
+** Lớp BasicToolsPlugin cung cấp một bộ cọ vẽ cơ bản và các hình cơ bản để
+** chèn vào ảnh.
+******************************************************************************/
+
 #ifndef BASICTOOLSPLUGIN_H
 #define BASICTOOLSPLUGIN_H
 
@@ -34,4 +39,4 @@ public:
 
 };
 
-#endif
+#endif  // BASICTOOLSPLUGIN_H
