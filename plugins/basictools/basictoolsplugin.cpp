@@ -113,33 +113,3 @@ QPainterPath BasicToolsPlugin::generateShape(const QString &shape,
 
     return path;
 }
-
-
-QStringList BasicToolsPlugin::filters() const
-{
-    return QStringList() << tr("Đảo ngược pixel") << tr("Đảo màu (RGB->BGR)")
-                         << tr("Màu xám");
-}
-
-
-QImage BasicToolsPlugin::filterImage(const QString &filter, const QImage &image,
-                                     QWidget * /* parent */)
-{
-    QImage result = image.convertToFormat(QImage::Format_RGB32);
-
-    if (filter == tr("Đảo ngược pixel")) {
-        result.invertPixels();
-    } else if (filter == tr("Đảo màu (RGB->BGR)")) {
-        result = result.rgbSwapped();
-    } else if (filter == tr("Màu xám")) {
-        for (int y = 0; y < result.height(); ++y) {
-            for (int x = 0; x < result.width(); ++x) {
-                int pixel = result.pixel(x, y);
-                int gray = qGray(pixel);
-                int alpha = qAlpha(pixel);
-                result.setPixel(x, y, qRgba(gray, gray, gray, alpha));
-            }
-        }
-    }
-    return result;
-}

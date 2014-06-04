@@ -12,12 +12,11 @@
 
 class BasicToolsPlugin : public QObject,
                          public BrushInterface,
-                         public ShapeInterface,
-                         public FilterInterface
+                         public ShapeInterface
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "org.qt.Mini-Paint.BrushInterface")
-    Q_INTERFACES(BrushInterface ShapeInterface FilterInterface)
+    Q_INTERFACES(BrushInterface ShapeInterface)
 
 public:
     // BrushInterface
@@ -33,10 +32,6 @@ public:
     QStringList shapes() const;
     QPainterPath generateShape(const QString &shape, QWidget *parent);
 
-    // FilterInterface
-    QStringList filters() const;
-    QImage filterImage(const QString &filter, const QImage &image,
-                       QWidget *parent);
 };
 
 #endif

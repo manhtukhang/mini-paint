@@ -89,7 +89,7 @@ void PluginDialog::populateTreeWidget(QObject *plugin, const QString &text)
         FilterInterface *iFilter =
                 qobject_cast<FilterInterface *>(plugin);
         if (iFilter)
-            addItems(pluginItem, "Bộ lọc", iFilter->filters());
+            addItems(pluginItem, "Các bộ lọc", iFilter->filters());
     }
 }
 

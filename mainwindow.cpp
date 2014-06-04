@@ -17,11 +17,12 @@
 #include <QInputDialog>
 #include <QApplication>
 
+// Constructor
 MainWindow::MainWindow() :
     paintArea(new PaintArea),
     scrollArea(new QScrollArea)
 {
-    undoStack = new QUndoStack(this);
+//    undoStack = new QUndoStack(this);
     scrollArea->setBackgroundRole(QPalette::Dark);
     scrollArea->setWidget(paintArea);
     setCentralWidget(scrollArea);
@@ -38,6 +39,8 @@ MainWindow::MainWindow() :
     QTimer::singleShot(500, this, SLOT(aboutPlugins()));
 }
 
+
+// Mở hình ảnh
 void MainWindow::open()
 {
     const QString fileName = QFileDialog::getOpenFileName(this,
@@ -53,10 +56,13 @@ void MainWindow::open()
     }
 }
 
+
+// Lưu hình ảnh với tên mới
 bool MainWindow::saveAs()
 {
     const QString initialPath = QDir::currentPath() + "/untitled.png";
-
+	
+	// Hộp thoại chọn nơi lưu tệp
     const QString fileName = QFileDialog::getSaveFileName(this, tr("Lưu"),
                                                           initialPath);
     if (fileName.isEmpty()) {
@@ -66,26 +72,36 @@ bool MainWindow::saveAs()
     }
 }
 
+
+// Hủy bỏ thao tác trước đó
 void MainWindow::undo()
 {
 
 }
 
+
+// Làm lại thao tác vừa hủy bỏ
 void MainWindow::redo()
 {
 
 }
 
+
+// Thay đổi màu cọ vẽ
 void MainWindow::brushColor()
 {
+	// Hiển thị bảng chọn màu
     const QColor newColor = QColorDialog::getColor(paintArea->brushColor());
     if (newColor.isValid())
         paintArea->setBrushColor(newColor);
 }
 
+
+// Thay đổi kích thước cọ vẽ
 void MainWindow::brushWidth()
 {
     bool ok;
+    // Hiển thị hộp thoại chọn kích thước cọ vẽ
     const int newWidth = QInputDialog::getInt(this, tr("Mini Paint"),
                                               tr("Kích thước cọ vẽ:"),
                                               paintArea->brushWidth(),
@@ -94,6 +110,8 @@ void MainWindow::brushWidth()
         paintArea->setBrushWidth(newWidth);
 }
 
+
+// Thay đổi cọ vẽ
 void MainWindow::changeBrush()
 {
     QAction *action = qobject_cast<QAction *>(sender());
@@ -103,6 +121,8 @@ void MainWindow::changeBrush()
     paintArea->setBrush(iBrush, brush);
 }
 
+
+// Thêm hình, tùy thuộc vào hình được chọn
 void MainWindow::insertShape()
 {
     QAction *action = qobject_cast<QAction *>(sender());
@@ -113,6 +133,8 @@ void MainWindow::insertShape()
         paintArea->insertShape(path);
 }
 
+
+// Áp dụng kết quả sau khi chọn bộ lọc vào vùng làm việc
 void MainWindow::applyFilter()
 {
     QAction *action = qobject_cast<QAction *>(sender());
@@ -124,6 +146,8 @@ void MainWindow::applyFilter()
     paintArea->setImage(image);
 }
 
+
+// Hộp thoại hiển thị thông tin chương trình
 void MainWindow::about()
 {
    QMessageBox::about(this, tr("Thông tin về Mini Paint"),
@@ -131,12 +155,17 @@ void MainWindow::about()
                "Có sử dụng các plugin ở dạng modul rời"));
 }
 
+
+// Hộp thoại hiển thị thông tin các plugin
 void MainWindow::aboutPlugins()
 {
     PluginDialog dialog(pluginsDir.path(), pluginFileNames, this);
     dialog.exec();
 }
 
+
+// Tạo ra các mục chọn, tương ứng với một hành động
+// Tạo cơ chế kết nối các mục tương ứng và hành động
 void MainWindow::createActions()
 {
     openAct = new QAction(tr("&Mở..."), this);
@@ -178,6 +207,8 @@ void MainWindow::createActions()
     connect(aboutPluginsAct, SIGNAL(triggered()), this, SLOT(aboutPlugins()));
 }
 
+
+// Tạo ra Menu và thêm các mục con cho mỗi Menu tương ứng
 void MainWindow::createMenus()
 {
     fileMenu = menuBar()->addMenu(tr("&Tệp"));
@@ -208,6 +239,9 @@ void MainWindow::createMenus()
     helpMenu->addAction(aboutPluginsAct);
 }
 
+
+// Nạp các plugin dưới dạng thư viện liên kết động đã biên dịch
+// Tìm trong thư mực hiện tại, nếu tìm thấy sẽ nạp vào các thể hiện sẵn có
 void MainWindow::loadPlugins()
 {
     foreach (QObject *plugin, QPluginLoader::staticInstances())
@@ -241,6 +275,8 @@ void MainWindow::loadPlugins()
     filterMenu->setEnabled(!filterMenu->actions().isEmpty());
 }
 
+
+// Nạp tiêu đề của các bộ lọc từ plugin vào menu
 void MainWindow::populateMenus(QObject *plugin)
 {
     BrushInterface *iBrush = qobject_cast<BrushInterface *>(plugin);
@@ -257,6 +293,8 @@ void MainWindow::populateMenus(QObject *plugin)
         addToMenu(plugin, iFilter->filters(), filterMenu, SLOT(applyFilter()));
 }
 
+
+// Thêm các Menu con vào thanh Menu
 void MainWindow::addToMenu(QObject *plugin, const QStringList &texts,
                            QMenu *menu, const char *member,
                            QActionGroup *actionGroup)
