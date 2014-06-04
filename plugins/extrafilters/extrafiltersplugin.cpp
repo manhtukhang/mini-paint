@@ -5,35 +5,44 @@
 
 #include "extrafiltersplugin.h"
 
+/*** FilterInterface ***/
+
+// Hàm trả về danh sách các bộ lọc có trong plugin
 QStringList ExtraFiltersPlugin::filters() const {
     return QStringList() << tr("Lật dọc")
            << tr("Lật ngang")
            << tr("Làm mờ")
-           << tr("Chia ngưỡng")
-           << tr("Ảnh nhị phân")
-           << tr("Đảo ngược pixel")
-           << tr("Đảo màu (RGB->BGR)")
            << tr("Đa mức xám")
+           << tr("Ảnh nhị phân")
+           << tr("Ảnh âm bản")
+           << tr("Đảo màu (RGB->BGR)")
            << tr("Độ sáng")
+           << tr("Độ bão hòa")
            << tr("Làm ấm")
-           << tr("Làm mát")
-           << tr("Bão hòa");
+           << tr("Làm mát...");
 }
 
 
+// Hàm dùng lọc ảnh bằng các filter tương ứng
 QImage ExtraFiltersPlugin::filterImage(const QString &filter,
                                        const QImage &image, QWidget *parent) {
+    // Chuyển đổi định dạng ảnh sang RGB 32-bit để các hàm làm việc như mong
+    // đợi
     QImage original = image.convertToFormat(QImage::Format_RGB32);
     QImage result = original;
 
-    if (filter == tr("Lật dọc")) {
+    if (filter == tr("Lật ngang")) {
+        // Nếu filter là "Lật ngang" thì hoán đổi các pixel của ảnh theo chiều
+        // ngang của ảnh
         for (int y = 0; y < original.height(); ++y) {
             for (int x = 0; x < original.width(); ++x) {
                 int pixel = original.pixel(original.width() - x - 1, y);
                 result.setPixel(x, y, pixel);
             }
         }
-    } else if (filter == tr("Lật ngang")) {
+    } else if (filter == tr("Lật dọc")) {
+        // Nếu filter là "Lật dọc" thì hoán đổi các pixel của ảnh theo chiều
+        // dọc của ảnh
         for (int y = 0; y < original.height(); ++y) {
             for (int x = 0; x < original.width(); ++x) {
                 int pixel = original.pixel(x, original.height() - y - 1);
@@ -41,10 +50,14 @@ QImage ExtraFiltersPlugin::filterImage(const QString &filter,
             }
         }
     } else if (filter == tr("Làm mờ")) {
-        bool ok;
+        // Nếu filter là "Làm mờ" thì bật QInputDialog lên cho người dùng nhập
+        // vào giá trị làm mờ, giá trị này trong khoảng 1 đến 20
+        bool ok;  // Kiểm tra giá trị nhập
         int numIters = QInputDialog::getInt(parent, tr("Làm mờ ảnh"),
                                             tr("Nhập giá trị:"),
                                             5, 1, 20, 1, &ok);
+        // Thực hiện làm mờ bằng cách set các giá trị của pixel bằng giá trị
+        // trung bình của nó với 4 pixel xung quanh.
         if (ok) {
             for (int i = 0; i < numIters; ++i) {
                 for (int y = 1; y < original.height() - 1; ++y) {
@@ -69,46 +82,34 @@ QImage ExtraFiltersPlugin::filterImage(const QString &filter,
                 }
             }
         }
-    } else if (filter == tr("Chia ngưỡng")) {
-        bool ok;
+    } else if (filter == tr("Ảnh nhị phân")) {
+        // Nếu filter là "Ảnh nhị phân" thì bật QInputDialog lên cho người dùng
+        // nhập vào giá trị ngưỡng, nằm trong khoảng 1 đến 255
+        bool ok; // Kiểm tra giá trị nhập
         int threshold = QInputDialog::getInt(parent, tr("Chia ngưỡng"),
                                              tr("Nhập ngưỡng:"),
-                                             10, 1, 256, 1, &ok);
+                                             10, 1, 255, 1, &ok);
+        // Đầu tiên ta chuyển ảnh về ảnh đa mức xám rồi so sánh từng pixel của
+        // ảnh với giá trị ngưỡng.
         if (ok) {
-            int factor = 256 / threshold;
             for (int y = 0; y < original.height(); ++y) {
                 for (int x = 0; x < original.width(); ++x) {
                     int pixel = original.pixel(x, y);
-                    result.setPixel(x, y, qRgba(qRed(pixel) / factor * factor,
-                                                qGreen(pixel) / factor * factor,
-                                                qBlue(pixel) / factor * factor,
-                                                qAlpha(pixel)));
-                }
-            }
-        }
-    } else if (filter == tr("Ảnh nhị phân")) {
-        {
-            for (int y = 0; y < original.height(); ++y) {
-                for (int x = 0; x < original.width(); ++x) {
-                    int pixel = original.pixel(x, y);
-                    int r = static_cast<int>(qRed(pixel));
-                    if (r >= 200) {
-                        r = 0;
-                    } else if (r >= 100 && r < 200) {
-                        r = 255;
-                    } else {
-                        r = 0;
-                    }
-                    pixel = qRgb(r, r, r);
+                    int gray = qGray(pixel);
+                    gray = gray > threshold ? 255 : 0;
+                    pixel = qRgb(gray, gray, gray);
                     result.setPixel(x, y, pixel);
                 }
             }
         }
-    } else if (filter == tr("Đảo ngược pixel")) {
+    } else if (filter == tr("Ảnh âm bản")) {
+        // Dùng hàm invertPixels() để đảo ngược các pixel.
         result.invertPixels();
     } else if (filter == tr("Đảo màu (RGB->BGR)")) {
+        // Dùng hàm rgbSwapped() để chuyển kênh màu của ảnh từ RGB sang BGR
         result = result.rgbSwapped();
     } else if (filter == tr("Đa mức xám")) {
+        //
         for (int y = 0; y < result.height(); ++y) {
             for (int x = 0; x < result.width(); ++x) {
                 int pixel = result.pixel(x, y);
@@ -117,65 +118,107 @@ QImage ExtraFiltersPlugin::filterImage(const QString &filter,
                 result.setPixel(x, y, qRgba(gray, gray, gray, alpha));
             }
         }
-    } else if(filter == tr("Độ sáng")) {
-        bool ok;
+    } else if (filter == tr("Độ sáng")) {
+        // Nếu filter là "Độ sáng" thì bật QInputDialog lên cho người dùng
+        // nhập vào giá trị ngưỡng, giá trị này trong khoảng -255 đến 255
+        bool ok;  // Kiểm tra giá trị nhập
         int brighness = QInputDialog::getInt(parent, tr("Độ sáng"),
-                                                 tr("Nhập độ sáng:"),
-                                                 10, 1, 256, 1, &ok);
-        if(ok) {
-            for(int y = 0; y < original.height(); ++y) {
-                for(int x = 0; x < original.width(); ++x) {
+                                             tr("Nhập độ sáng:"),
+                                             10, -255, 255, 1, &ok);
+        // Ta tăng hoặc giảm giá trị các màu của từng pixel
+        if (ok) {
+            int r, g, b;
+
+            for (int x = 0; x < original.width(); x++) {
+                for (int y = 0; y < original.height(); y++) {
+
                     int pixel = original.pixel(x, y);
-                    result.setPixel(x, y, qRgba(qRed(pixel) + brighness,
-                                                qGreen(pixel) + brighness,
-                                                qBlue(pixel) + brighness,
-                                                qAlpha(pixel)));
+
+                    r = qRed(pixel) + brighness;
+                    g = qGreen(pixel) + brighness;
+                    b = qBlue(pixel) + brighness;
+
+                    //Ta kiểm tra các giá trị mới trong khoảng cho phép.
+                    r = qBound(0, r, 255);
+                    g = qBound(0, g, 255);
+                    b = qBound(0, b, 255);
+
+                    result.setPixel(x, y, qRgba(r, g, b, qAlpha(pixel)));
                 }
             }
         }
-    } else if(filter == tr("Làm ấm")) {
-        bool ok;
+    } else if (filter == tr("Làm ấm")) {
+        // Nếu filter là "Làm ấm" thì bật QInputDialog lên cho người dùng
+        // nhập vào giá trị, giá trị này trong khoảng 1 đến 255
+        bool ok;  // Kiểm tra giá trị nhập
         int delta = QInputDialog::getInt(parent, tr("Lầm ấm"),
-                                                 tr("Nhập mức độ ấm:"),
-                                                 10, 1, 256, 1, &ok);
-        if(ok) {
-            for(int y = 0; y < original.height(); ++y) {
-                for(int x = 0; x < original.width(); ++x) {
+                                         tr("Nhập mức độ ấm:"),
+                                         10, 1, 255, 1, &ok);
+        // Hình sẽ trong ấm hơn nếu ta tăng độ vàng của ảnh, và màu vàng được
+        // tổng hợp từ màu đỏ và xanh lục trong kênh màu RGB
+        if (ok) {
+            int r, g, b;
+
+            for (int x = 0; x < original.width(); x++) {
+                for (int y = 0; y < original.height(); y++) {
+
                     int pixel = original.pixel(x, y);
-                    result.setPixel(x, y, qRgba(qRed(pixel) + delta,
-                                                qGreen(pixel) + delta,
-                                                qBlue(pixel),
-                                                qAlpha(pixel)));
+
+                    r = qRed(pixel) + delta;
+                    g = qGreen(pixel) + delta;
+                    b = qBlue(pixel);
+
+                    //Ta kiểm tra các giá trị mới trong khoảng cho phép.
+                    r = qBound(0, r, 255);
+                    g = qBound(0, g, 255);
+
+                    result.setPixel(x, y, qRgba(r, g, b, qAlpha(pixel)));
                 }
             }
         }
-    } else if(filter == tr("Làm mát")) {
-        bool ok;
+    } else if (filter == tr("Làm mát...")) {
+        // Nếu filter là "Làm mát" thì bật QInputDialog lên cho người dùng
+        // nhập vào giá trị, giá trị này trong khoảng 1 đến 255
+        bool ok;  // Kiểm tra giá trị nhập
         int delta = QInputDialog::getInt(parent, tr("Lầm mát"),
-                                                 tr("Nhập mức độ mát:"),
-                                                 10, 1, 256, 1, &ok);
-        if(ok) {
-            for(int y = 0; y < original.height(); ++y) {
-                for(int x = 0; x < original.width(); ++x) {
+                                         tr("Nhập mức độ mát:"),
+                                         10, 1, 256, 1, &ok);
+        // Hình sẽ có cảm giác mát hơn khi ta tăng giá trị kênh màu xanh lam
+        if (ok) {
+            int r, g, b;
+
+            for (int x = 0; x < original.width(); x++) {
+                for (int y = 0; y < original.height(); y++) {
+
                     int pixel = original.pixel(x, y);
-                    result.setPixel(x, y, qRgba(qRed(pixel),
-                                                qGreen(pixel),
-                                                qBlue(pixel) + delta,
-                                                qAlpha(pixel)));
+
+                    r = qRed(pixel);
+                    g = qGreen(pixel);
+                    b = qBlue(pixel) + delta;
+
+                    //Ta kiểm tra giá trị mới trong khoảng cho phép.
+                    b = qBound(0, b, 255);
+
+                    result.setPixel(x, y, qRgba(r, g, b, qAlpha(pixel)));
                 }
             }
         }
-    } else if(filter == tr("Bão hòa")) {
-        bool ok;
-        int delta = QInputDialog::getInt(parent, tr("Bão hòa"),
-                                                 tr("Nhập độ bão hòa:"),
-                                                 10, 1, 256, 1, &ok);
+    } else if (filter == tr("Độ bão hòa")) {
+        // Nếu filter là "Độ bão hòa" thì bật QInputDialog lên cho người dùng
+        // nhập vào giá trị, giá trị này trong khoảng -255 đến 255
+        bool ok; // Kiểm tra giá trị nhập vào
+        int delta = QInputDialog::getInt(parent, tr("Độ bão hòa"),
+                                         tr("Nhập độ bão hòa:"),
+                                         10, -255, 255, 1, &ok);
         QColor newClolor;
         QColor oldColor;
         int h, s, l;
-        if(ok) {
-            for(int y = 0; y < original.height(); ++y) {
-                for(int x = 0; x < original.width(); ++x) {
+
+        // Ta chuyển hình về kênh màu HSL rồi sau đó tăng hoặc giảm kênh
+        // saturation để tăng hoặc giảm độ bão hòa sau đó lại chuyển ảnh về RGB
+        if (ok) {
+            for (int y = 0; y < original.height(); ++y) {
+                for (int x = 0; x < original.width(); ++x) {
 
                     oldColor = QColor(original.pixel(x, y));
                     newClolor = oldColor.toHsl();
@@ -183,6 +226,9 @@ QImage ExtraFiltersPlugin::filterImage(const QString &filter,
                     h = newClolor.hue();
                     s = newClolor.saturation() + delta;
                     l = newClolor.lightness();
+
+                    // Ta kiểm tra giá trị mới trong khoảng cho phép
+                    s = qBound(0, s, 255);
 
                     newClolor.setHsl(h, s, l);
 
