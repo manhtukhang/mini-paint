@@ -18,6 +18,8 @@
 #include <QInputDialog>
 #include <QApplication>
 
+QString fileName;
+
 // Constructor
 MainWindow::MainWindow() :
     paintArea(new PaintArea),
@@ -44,9 +46,9 @@ MainWindow::MainWindow() :
 // Mở hình ảnh
 void MainWindow::open()
 {
-    const QString fileName = QFileDialog::getOpenFileName(this,
-                                                          tr("Mở tệp"),
-                                                          QDir::currentPath());
+    fileName = QFileDialog::getOpenFileName(this,
+                                            tr("Mở tệp"),
+                                            QDir::currentPath());
     if (!fileName.isEmpty()) {
         if (!paintArea->openImage(fileName)) {
             QMessageBox::information(this, tr("Mini Paint"),
@@ -74,21 +76,26 @@ bool MainWindow::saveAs()
 }
 
 
-// Phần này chưa hoàn thiện
-/*
 // Hủy bỏ thao tác trước đó
 void MainWindow::undo()
 {
-
+    if (!fileName.isEmpty()) {
+        if (!paintArea->openImage(fileName)) {
+            QMessageBox::information(this, tr("Mini Paint"),
+            tr("Không thể mở %1.").arg(fileName));
+            return;
+        }
+        paintArea->adjustSize();
+    }
 }
 
 
-// Làm lại thao tác vừa hủy bỏ
-void MainWindow::redo()
-{
+// // Làm lại thao tác vừa hủy bỏ
+// void MainWindow::redo()
+// {
 
-}
-*/
+// }
+
 
 // Thay đổi màu cọ vẽ
 void MainWindow::brushColor()
@@ -187,11 +194,11 @@ void MainWindow::createActions()
     saveAsAct->setShortcuts(QKeySequence::SaveAs);
     connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
 
-/*
     undoAct = new QAction(tr("Hủy thao tác"), this);
     undoAct->setShortcuts(QKeySequence::Undo);
     connect(undoAct, SIGNAL(triggered()), this, SLOT(undo()));
 
+/*
     redoAct = new QAction(tr("Làm lại"), this);
     redoAct->setShortcuts(QKeySequence::Redo);
     connect(redoAct, SIGNAL(triggered()), this, SLOT(redo()));
@@ -229,9 +236,9 @@ void MainWindow::createMenus()
     fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
 
-/*
     editMenu = menuBar()->addMenu(tr("&Biên tập"));
     editMenu->addAction(undoAct);
+/*
     editMenu->addAction(redoAct);
 */
 

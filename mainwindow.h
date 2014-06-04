@@ -25,7 +25,7 @@ public:
 private slots:
     void open();
     bool saveAs();
-    // void undo();
+    void undo();
     // void redo();
     void brushColor();
     void brushWidth();
@@ -49,7 +49,7 @@ private:
     QStringList pluginFileNames;
 
     QMenu *fileMenu;
-    // QMenu *editMenu;
+    QMenu *editMenu;
     QMenu *brushMenu;
     QMenu *shapesMenu;
     QMenu *filterMenu;
@@ -58,7 +58,7 @@ private:
     QAction *openAct;
     QAction *saveAsAct;
     QAction *exitAct;
-    // QAction *undoAct;
+    QAction *undoAct;
     // QAction *redoAct;
     QAction *brushWidthAct;
     QAction *brushColorAct;

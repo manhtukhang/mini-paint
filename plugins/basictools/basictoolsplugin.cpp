@@ -5,13 +5,13 @@
 
 #include "basictoolsplugin.h"
 
-    // Khai báo và định nghĩa hằng số Pi
+// Khai báo và định nghĩa hằng số Pi
 const float Pi = 3.14159f;
 
 
      /*** Thực hiện giao diện cọ vẽ ***/
 
-    // Hàm trả về danh sách các cọ vẽ có trong plugin.
+// Hàm trả về danh sách các cọ vẽ có trong plugin.
 QStringList BasicToolsPlugin::brushes() const
 {
     return QStringList() << tr("Bút chì") << tr("Phun sương")
@@ -19,7 +19,7 @@ QStringList BasicToolsPlugin::brushes() const
 }
 
 
-    // Hàm dùng để vẽ khi xảy ra sự kiện bấm chuột bằng cách gọi hàm 
+// Hàm dùng để vẽ khi xảy ra sự kiện bấm chuột bằng cách gọi hàm 
     // BasicToolsPlugin::mouseMove(...)
 QRect BasicToolsPlugin::mousePress(const QString &brush, QPainter &painter,
                                    const QPoint &pos)
@@ -27,7 +27,7 @@ QRect BasicToolsPlugin::mousePress(const QString &brush, QPainter &painter,
     return mouseMove(brush, painter, pos, pos);
 }
 
-    // Hàm dùng để vẽ bằng cọ vẽ cung cấp trong plugin
+// Hàm dùng để vẽ bằng cọ vẽ cung cấp trong plugin
 QRect BasicToolsPlugin::mouseMove(const QString &brush, QPainter &painter,
                                   const QPoint &oldPos, const QPoint &newPos)
 {
@@ -87,7 +87,7 @@ QRect BasicToolsPlugin::mouseMove(const QString &brush, QPainter &painter,
     return boundingRect;
 }
 
-    // Hàm trả về một hình QRect rỗng khi người dùng thả chuột
+// Hàm trả về một hình QRect rỗng khi người dùng thả chuột
 QRect BasicToolsPlugin::mouseRelease(const QString & /* brush */,
                                      QPainter & /* painter */,
                                      const QPoint & /* pos */)
@@ -96,15 +96,15 @@ QRect BasicToolsPlugin::mouseRelease(const QString & /* brush */,
 }
 
 
-    /*** Thực hiện giao diện hình cơ bản ***/
+/*** Thực hiện giao diện hình cơ bản ***/
 
-    // Hàm trả về các hình cơ bản trong plugin
+// Hàm trả về các hình cơ bản trong plugin
 QStringList BasicToolsPlugin::shapes() const
 {
     return QStringList() << tr("Hình tròn") << tr("Ngôi sao") << tr("Văn bản...");
 }
 
-    // Hàm dùng để vẽ các hình cơ bản trong plugin
+// Hàm dùng để vẽ các hình cơ bản trong plugin
 QPainterPath BasicToolsPlugin::generateShape(const QString &shape,
                                              QWidget *parent)
 {
