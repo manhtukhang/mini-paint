@@ -1,14 +1,18 @@
 /******************************************************************************
-** Lớp giao diện cho các plugin
-** Đây là lớp trừu tượng, dùng để kế thừa, tránh nhầm lẫn với giao diện
-** tương tác (GUI, CLI, API)
-** 
-** Bao gồm các lớp sau:
-**  - BrushInterface
-**  - ShapeInterface
-**  - FilterInterface
-** Thể hiện của những lớp trên sẽ được cụ thể hóa ở các lớp kế thừa sau này
-*/
+ * Mini Paint                                                                 *
+ * Copyleft (Ɔ) 2014 - Mini Paint                                             *
+ * https://github.com/manhtuvjp/mini-paint                                    *
+ ******************************************************************************
+ * Lớp giao diện cho các plugin                                               *
+ * Đây là lớp trừu tượng, dùng để kế thừa, tránh nhầm lẫn với giao diện       *
+ * tương tác (GUI, CLI, API)                                                  *
+ *                                                                            *
+ * Bao gồm các lớp sau:                                                       *
+ *  - BrushInterface                                                          *
+ *  - ShapeInterface                                                          *
+ *  - FilterInterface                                                         *
+ * Thể hiện của những lớp trên sẽ được cụ thể hóa ở các lớp kế thừa sau này   *
+ ******************************************************************************/
 
 #ifndef INTERFACES_H
 #define INTERFACES_H
@@ -26,8 +30,7 @@ class QString;
 class QStringList;
 QT_END_NAMESPACE
 
-class BrushInterface
-{
+class BrushInterface {
 public:
     virtual ~BrushInterface() {}
 
@@ -40,8 +43,7 @@ public:
                                const QPoint &pos) = 0;
 };
 
-class ShapeInterface
-{
+class ShapeInterface {
 public:
     virtual ~ShapeInterface() {}
 
@@ -50,8 +52,7 @@ public:
                                        QWidget *parent) = 0;
 };
 
-class FilterInterface
-{
+class FilterInterface {
 public:
     virtual ~FilterInterface() {}
 
@@ -63,7 +64,7 @@ public:
 
 /*
 Phần này hết sức quan trọng
-Là tên để nhận diện các plugin trong chương trình chính khi nạp các plugin
+Là tên để nhận diện các plugin trong chương trình chính khi nạp các plugin này
 */
 QT_BEGIN_NAMESPACE
 

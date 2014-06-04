@@ -1,9 +1,31 @@
+/******************************************************************************
+ * Mini Paint                                                                 *
+ * Copyleft (Ɔ) 2014 - Mini Paint                                             *
+ * https://github.com/manhtuvjp/mini-paint                                    *
+ *                                                                            *
+ ******************************************************************************
+ * Cung cấp các bộ lọc ảnh đơn giản như:                                      *
+ *  - Lật dọc ảnh                                                             *
+ *  - Lật ngang ảnh                                                           *
+ *  - Làm mờ ảnh                                                              *
+ *  - Chuyển thành ảnh đa mức xám                                             *
+ *  - Chuyển thành ảnh nhị phân                                               *
+ *  - Chuyển thành ảnh âm bản                                                 *
+ *  - Đảo kênh màu từ RGB thành BGR                                           *
+ *  - Thay đổi độ sáng của ảnh                                                *
+ *  - Thay đổi độ bão hòa của ảnh                                             *
+ *  - Làm ấm màu sắc ảnh                                                      *
+ *  - Làm mát màu sắc ảnh                                                     *
+ ******************************************************************************/
+
+
 #include <QtWidgets>
 
 #include <math.h>
 #include <stdlib.h>
 
 #include "extrafiltersplugin.h"
+
 
 /*** FilterInterface ***/
 
@@ -86,11 +108,11 @@ QImage ExtraFiltersPlugin::filterImage(const QString &filter,
         }
     } else if (filter == tr("Ảnh nhị phân")) {
         // Nếu filter là "Ảnh nhị phân" thì bật QInputDialog lên cho người dùng
-        // nhập vào giá trị ngưỡng, nằm trong khoảng 1 đến 255
+        // nhập vào giá trị ngưỡng, nằm trong khoảng 0 đến 255
         bool ok; // Kiểm tra giá trị nhập
         int threshold = QInputDialog::getInt(parent, tr("Chia ngưỡng"),
                                              tr("Nhập ngưỡng:"),
-                                             10, 1, 255, 1, &ok);
+                                             85, 0, 255, 1, &ok);
         // Đầu tiên ta chuyển ảnh về ảnh đa mức xám rồi so sánh từng pixel của
         // ảnh với giá trị ngưỡng.
         if (ok) {

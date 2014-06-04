@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Mini Paint                                                                 *
+ * Copyleft (Ɔ) 2014 - Mini Paint                                             *
+ * https://github.com/manhtuvjp/mini-paint                                    *
+ ******************************************************************************/
+
+
 #include "mainwindow.h"
 #include <QtPlugin>
 #include <QApplication>

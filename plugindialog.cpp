@@ -1,3 +1,17 @@
+/******************************************************************************
+ * Mini Paint                                                                 *
+ * Copyleft (Ɔ) 2014 - Mini Paint                                             *
+ * https://github.com/manhtuvjp/mini-paint                                    *
+ *                                                                            *
+ ******************************************************************************
+ * Hộp thoại hỉên thị các công cụ, bộ lọc được nạp từ plugin                  *
+ * Gồm có 2 loại:                                                             *
+ *  - Plugin tĩnh, được biên dịch và liên kết trực tíêp vào chương trình      *
+ *  - Plugin động, dạng thư viện chia sẻ dùng chung liên kết động             *
+ * Loại thứ 2 sẽ được nạp khi chương trình thực thi                           *
+ ******************************************************************************/
+
+
 #include "interfaces.h"
 #include "plugindialog.h"
 
@@ -55,15 +69,16 @@ void PluginDialog::findPlugins(const QString &path,
 
     const QDir dir(path);
 
-    foreach (QObject *plugin, QPluginLoader::staticInstances())
-        populateTreeWidget(plugin, tr("%1 (Plugin tĩnh)")
-                                   .arg(plugin->metaObject()->className()));
+    foreach (QObject * plugin, QPluginLoader::staticInstances())
+    populateTreeWidget(plugin, tr("%1 (Plugin tĩnh)")
+                       .arg(plugin->metaObject()->className()));
 
     foreach (QString fileName, fileNames) {
         QPluginLoader loader(dir.absoluteFilePath(fileName));
         QObject *plugin = loader.instance();
-        if (plugin)
+        if (plugin) {
             populateTreeWidget(plugin, fileName);
+        }
     }
 }
 
@@ -79,17 +94,20 @@ void PluginDialog::populateTreeWidget(QObject *plugin, const QString &text)
 
     if (plugin) {
         BrushInterface *iBrush = qobject_cast<BrushInterface *>(plugin);
-        if (iBrush)
+        if (iBrush) {
             addItems(pluginItem, "Cọ vẽ", iBrush->brushes());
+        }
 
         ShapeInterface *iShape = qobject_cast<ShapeInterface *>(plugin);
-        if (iShape)
-            addItems(pluginItem, "Hình", iShape->shapes());
+        if (iShape) {
+            addItems(pluginItem, "Hình khối", iShape->shapes());
+        }
 
         FilterInterface *iFilter =
-                qobject_cast<FilterInterface *>(plugin);
-        if (iFilter)
+            qobject_cast<FilterInterface *>(plugin);
+        if (iFilter) {
             addItems(pluginItem, "Các bộ lọc", iFilter->filters());
+        }
     }
 }
 
@@ -102,8 +120,9 @@ void PluginDialog::addItems(QTreeWidgetItem *pluginItem,
     interfaceItem->setIcon(0, interfaceIcon);
 
     foreach (QString feature, features) {
-        if (feature.endsWith("..."))
+        if (feature.endsWith("...")) {
             feature.chop(3);
+        }
         QTreeWidgetItem *featureItem = new QTreeWidgetItem(interfaceItem);
         featureItem->setText(0, feature);
         featureItem->setIcon(0, featureIcon);
