@@ -1,3 +1,16 @@
+/******************************************************************************
+ * Mini Paint                                                                 *
+ * Copyleft (Ɔ) 2014 - Mini Paint                                             *
+ * https://github.com/manhtuvjp/mini-paint                                    *
+ ******************************************************************************
+ * Vùng làm việc chính, bao gồm các hoạt động sau:                            *
+ *  - Khởi tạo các thông số mặc định                                          *
+ *  - Mở hình ảnh từ tệp                                                      *
+ *  - Lưu hình ảnh ra tệp                                                     *
+ *  - Chèn các hình cơ bản do người dùng chọn                                 *
+ *  - Bắt các sự kiện chuột như: nhấn, di chuyển                              *
+ ******************************************************************************/
+
 
 #ifndef PAINTAREA_H
 #define PAINTAREA_H
@@ -9,8 +22,7 @@
 
 class BrushInterface;
 
-class PaintArea : public QWidget
-{
+class PaintArea : public QWidget {
     Q_OBJECT
 
 public:
@@ -24,9 +36,15 @@ public:
     void setBrushWidth(int width);
     void setBrush(BrushInterface *brushInterface, const QString &brush);
 
-    QImage image() const { return theImage; }
-    QColor brushColor() const { return color; }
-    int brushWidth() const { return thickness; }
+    QImage image() const {
+        return theImage;
+    }
+    QColor brushColor() const {
+        return color;
+    }
+    int brushWidth() const {
+        return thickness;
+    }
     QSize sizeHint() const;
 
 protected:

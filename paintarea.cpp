@@ -1,3 +1,17 @@
+/******************************************************************************
+ * Mini Paint                                                                 *
+ * Copyleft (Ɔ) 2014 - Mini Paint                                             *
+ * https://github.com/manhtuvjp/mini-paint                                    *
+ ******************************************************************************
+ * Vùng làm việc chính, bao gồm các hoạt động sau:                            *
+ *  - Khởi tạo các thông số mặc định                                          *
+ *  - Mở hình ảnh từ tệp                                                      *
+ *  - Lưu hình ảnh ra tệp                                                     *
+ *  - Chèn các hình cơ bản do người dùng chọn                                 *
+ *  - Bắt các sự kiện chuột như: nhấn, di chuyển                              *
+ ******************************************************************************/
+
+
 #include "interfaces.h"
 #include "paintarea.h"
 
@@ -6,9 +20,9 @@
 
 PaintArea::PaintArea(QWidget *parent) :
     QWidget(parent),
-    theImage(500, 400, QImage::Format_RGB32),
+    theImage(600, 480, QImage::Format_RGB32),
     color(Qt::blue),
-    thickness(3),
+    thickness(4),
     brushInterface(0),
     lastPos(-1, -1)
 {
@@ -18,20 +32,24 @@ PaintArea::PaintArea(QWidget *parent) :
     theImage.fill(qRgb(255, 255, 255));
 }
 
+
 bool PaintArea::openImage(const QString &fileName)
 {
     QImage image;
-    if (!image.load(fileName))
+    if (!image.load(fileName)) {
         return false;
+    }
 
     setImage(image);
     return true;
 }
 
+
 bool PaintArea::saveImage(const QString &fileName, const char *fileFormat)
 {
     return theImage.save(fileName, fileFormat);
 }
+
 
 void PaintArea::setImage(const QImage &image)
 {
@@ -39,6 +57,7 @@ void PaintArea::setImage(const QImage &image)
     update();
     updateGeometry();
 }
+
 
 void PaintArea::insertShape(const QPainterPath &path)
 {
@@ -48,15 +67,18 @@ void PaintArea::insertShape(const QPainterPath &path)
 #endif
 }
 
+
 void PaintArea::setBrushColor(const QColor &color)
 {
     this->color = color;
 }
 
+
 void PaintArea::setBrushWidth(int width)
 {
     thickness = width;
 }
+
 
 void PaintArea::setBrush(BrushInterface *brushInterface, const QString &brush)
 {
@@ -64,16 +86,19 @@ void PaintArea::setBrush(BrushInterface *brushInterface, const QString &brush)
     this->brush = brush;
 }
 
+
 QSize PaintArea::sizeHint() const
 {
     return theImage.size();
 }
+
 
 void PaintArea::paintEvent(QPaintEvent * /* event */)
 {
     QPainter painter(this);
     painter.drawImage(QPoint(0, 0), theImage);
 }
+
 
 void PaintArea::mousePressEvent(QMouseEvent *event)
 {
@@ -103,7 +128,7 @@ void PaintArea::mousePressEvent(QMouseEvent *event)
                 QPainter painter(&theImage);
                 setupPainter(painter);
                 const QRect rect = brushInterface->mousePress(brush, painter,
-                                                              event->pos());
+                                   event->pos());
                 update(rect);
             }
 
@@ -112,6 +137,7 @@ void PaintArea::mousePressEvent(QMouseEvent *event)
     }
 }
 
+
 void PaintArea::mouseMoveEvent(QMouseEvent *event)
 {
     if ((event->buttons() & Qt::LeftButton) && lastPos != QPoint(-1, -1)) {
@@ -119,13 +145,14 @@ void PaintArea::mouseMoveEvent(QMouseEvent *event)
             QPainter painter(&theImage);
             setupPainter(painter);
             const QRect rect = brushInterface->mouseMove(brush, painter, lastPos,
-                                                         event->pos());
+                               event->pos());
             update(rect);
         }
 
         lastPos = event->pos();
     }
 }
+
 
 void PaintArea::mouseReleaseEvent(QMouseEvent *event)
 {
@@ -134,7 +161,7 @@ void PaintArea::mouseReleaseEvent(QMouseEvent *event)
             QPainter painter(&theImage);
             setupPainter(painter);
             QRect rect = brushInterface->mouseRelease(brush, painter,
-                                                      event->pos());
+                         event->pos());
             update(rect);
         }
 
@@ -142,9 +169,10 @@ void PaintArea::mouseReleaseEvent(QMouseEvent *event)
     }
 }
 
+
 void PaintArea::setupPainter(QPainter &painter)
 {
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setPen(QPen(color, thickness, Qt::SolidLine, Qt::RoundCap,
-                   Qt::RoundJoin));
+                        Qt::RoundJoin));
 }

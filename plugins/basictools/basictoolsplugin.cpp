@@ -1,3 +1,17 @@
+/******************************************************************************
+ * Mini Paint                                                                 *
+ * Copyleft (Ɔ) 2014 - Mini Paint                                             *
+ * https://github.com/manhtuvjp/mini-paint                                    *
+ *                                                                            *
+ ******************************************************************************
+ * Cung cấp các công cụ đơn giản như:                                         *
+ *  - Bút vẽ                                                                  *
+ *  - Công cụ phun màu dạng sương mụ                                          *
+ *  - Chèn vào 1 chữ cái ngẫu nhiên trong bảng chữ cái Alphabet               *
+ *  - Các hình cơ bản như: hình tròn, ngôi sao, văn bản                       *
+ ******************************************************************************/
+
+
 #include <QtWidgets>
 
 #include <math.h>
@@ -9,18 +23,18 @@
 const float Pi = 3.14159f;
 
 
-     /*** Thực hiện giao diện cọ vẽ ***/
+/*** Thực hiện giao diện cọ vẽ ***/
 
 // Hàm trả về danh sách các cọ vẽ có trong plugin.
 QStringList BasicToolsPlugin::brushes() const
 {
     return QStringList() << tr("Bút chì") << tr("Phun sương")
-                         << tr("Chữ ngẫu nhiên");
+           << tr("Chữ cái ngẫu nhiên");
 }
 
 
-// Hàm dùng để vẽ khi xảy ra sự kiện bấm chuột bằng cách gọi hàm 
-    // BasicToolsPlugin::mouseMove(...)
+// Hàm dùng để vẽ khi xảy ra sự kiện bấm chuột bằng cách gọi hàm
+// BasicToolsPlugin::mouseMove(...)
 QRect BasicToolsPlugin::mousePress(const QString &brush, QPainter &painter,
                                    const QPoint &pos)
 {
@@ -36,7 +50,7 @@ QRect BasicToolsPlugin::mouseMove(const QString &brush, QPainter &painter,
 
     int rad = painter.pen().width() / 2;
     QRect boundingRect = QRect(oldPos, newPos).normalized()
-                                              .adjusted(-rad, -rad, +rad, +rad);
+                         .adjusted(-rad, -rad, +rad, +rad);
     QColor color = painter.pen().color();
     int thickness = painter.pen().width();
     QColor transparentColor(color.red(), color.green(), color.blue(), 0);
@@ -48,7 +62,7 @@ QRect BasicToolsPlugin::mouseMove(const QString &brush, QPainter &painter,
         // hiện tại
         painter.drawLine(oldPos, newPos);
     } else if (brush == tr("Phun sương")) {
-        // Nếu cọ vẽ là "Phun sương" ta thiết lập QBrush của painter về 
+        // Nếu cọ vẽ là "Phun sương" ta thiết lập QBrush của painter về
         // Q::Dense6Pattern để được các chấm.
         int numSteps = 2 + (newPos - oldPos).manhattanLength() / 2;
 
@@ -64,8 +78,8 @@ QRect BasicToolsPlugin::mouseMove(const QString &brush, QPainter &painter,
             painter.drawEllipse(x - (thickness / 2), y - (thickness / 2),
                                 thickness, thickness);
         }
-    } else if (brush == tr("Chữ ngẫu nhiên")) {
-        // Nếu cọ vẽ là một "Chữ ngẫu nhiên" ta sẽ chọn một kí tự ngẫu nhiên 
+    } else if (brush == tr("Chữ cái ngẫu nhiên")) {
+        // Nếu cọ vẽ là một "Chữ ngẫu nhiên" ta sẽ chọn một kí tự ngẫu nhiên
         // từ A đến Z
         QChar ch('A' + (qrand() % 26));
 
@@ -106,17 +120,17 @@ QStringList BasicToolsPlugin::shapes() const
 
 // Hàm dùng để vẽ các hình cơ bản trong plugin
 QPainterPath BasicToolsPlugin::generateShape(const QString &shape,
-                                             QWidget *parent)
+        QWidget *parent)
 {
     // QPainterPath sẽ nhận một hình dạng xác định để được vẽ
     QPainterPath path;
 
     if (shape == tr("Hình tròn")) {
-        // Nếu là "Hình tròn" thì ta sẽ bật một QInputDialog lên để người dùng 
+        // Nếu là "Hình tròn" thì ta sẽ bật một QInputDialog lên để người dùng
         // nhập vào bán kính
-        double r = QInputDialog::getDouble(parent, tr("BK"),
-                                             tr("Nhập BK:"),
-                                             QLineEdit::Normal, 10);
+        double r = QInputDialog::getDouble(parent, tr("Bán kính"),
+                                           tr("Nhập bán kính:"),
+                                           QLineEdit::Normal, 10);
         // Vẽ hình tròn với bán kính bằng r vừa nhập
         path.addEllipse(0, 0, r, r);
     } else if (shape == tr("Ngôi sao")) {

@@ -6,6 +6,12 @@ mini-paint
 ## Tính năng
 ## Các thành phần
 
+# Hướng dẫn biên dịch
+## Thành phần phụ thuộc
+## Linux
+## MacOS
+## Windows
 
+# Báo lỗi và đóng góp tính năng
 
 
