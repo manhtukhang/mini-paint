@@ -1,0 +1,44 @@
+language: cpp
+compiler:
+  - gcc
+  # - clang
+
+before_install:
+  - if [ "$CXX" = "g++" ]; then sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y; fi
+  - if [ "$CXX" = "g++" ]; then sudo add-apt-repository ppa:ondrej/php5 -y; fi
+  - if [ "$CXX" = "g++" ]; then sudo apt-get update -qq; fi
+  - if [ "$CXX" = "g++" ]; then sudo apt-get install g++-4.8 libboost-regex-dev zip -y; fi
+  # - if [ "$CXX" = "g++" ]; then sudo apt-get upgrade -y; fi
+  - if [ "$CXX" = "g++" ]; then sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 50; fi
+  - if [ "$CXX" = "g++" ]; then sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50; fi
+  - wget -O Qt5.3.0.tar.xz https://db.tt/56yg44N7
+  - mkdir ~/Qt5.3.0
+  - tar -xJf Qt5.3.0.tar.xz -C ~/Qt5.3.0
+  - sudo chmod -R 777 ~/Qt5.3.0/
+  - ln -s ~/Qt5.3.0/gcc_64/mkspecs/linux-g++ ~/Qt5.3.0/gcc_64/mkspecs/linux-gcc
+
+script:
+  - cd plugins
+  - ~/Qt5.3.0/gcc_64/bin/qmake -Wall plugins.pro
+  - make -j10
+  - cd ..
+  - ~/Qt5.3.0/gcc_64/bin/qmake -Wall mini-paint.pro
+  - make -j10
+
+notifications:
+  email:
+    recipients:
+      - manhtuvjp@gmail
+      - hoaiphong95@gmail
+    on_success: always
+    on_failure: always
+  irc:
+    channels:
+      - "chat.freenode.net#manhtu"
+      - "chat.freenode.net##manhtu"
+    template:
+      - "%{repository}/%{branch} (%{commit} - %{author}): %{message}"
+      - "Change view : %{compare_url}"
+      - "Build details : %{build_url}"
+    on_success: always
+    on_failure: always
