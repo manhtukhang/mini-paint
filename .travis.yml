@@ -9,24 +9,27 @@ before_install:
   - if [ "$CXX" = "g++" ]; then sudo apt-get install g++-4.8; fi
   - if [ "$CXX" = "g++" ]; then sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 50; fi
   - if [ "$CXX" = "g++" ]; then sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50; fi
-  - wget -O Qt5.2.0.tar.xz https://dl.dropboxusercontent.com/u/20447449/Qt5.2.0.tar.xz
-  - mkdir ~/Qt5.2.0
-  - tar -xJf Qt5.2.0.tar.xz -C ~/Qt5.2.0
-  - sudo chmod -R 777 ~/Qt5.2.0/
-  - ln -s ~/Qt5.2.0/5.2.0/gcc_64/mkspecs/linux-g++ ~/Qt5.2.0/5.2.0/gcc_64/mkspecs/linux-gcc
+  - wget -O Qt5.3.0.tar.xz https://db.tt/56yg44N7
+  - mkdir ~/Qt5.3.0
+  - tar -xJf Qt5.3.0.tar.xz -C ~/Qt5.3.0
+  - sudo chmod -R 777 ~/Qt5.3.0/
+  - ln -s ~/Qt5.3.0/gcc_64/mkspecs/linux-g++ ~/Qt5.3.0/gcc_64/mkspecs/linux-gcc
 
 script:
   - cd plugins
-  - ~/Qt5.2.0/5.2.0/gcc_64/bin/qmake plugins.pro
-  - make -j$(proc)
+  - ~/Qt5.3.0/gcc_64/bin/qmake -Wall plugins.pro
+  - make -j10
   - cd ..
-  - ~/Qt5.2.0/5.2.0/gcc_64/bin/qmake mini-paint.pro
-  - make -j$(proc)
-  # - ~/Qt5.2.0/5.2.0/gcc_64/bin/qmake -v
-  # - ~/Qt5.2.0/5.2.0/gcc_64/bin/qmake -spec linux-$CC -Wall projectfiles/QtCreator/TOX-Qt-GUI.pro
-  # - make -j$(nproc)
+  - ~/Qt5.3.0/gcc_64/bin/qmake -Wall mini-paint.pro
+  - make -j10
 
 notifications:
+  email:
+    recipients:
+      - "manhtuvjp@gmail"
+      - "hoaiphong95@gmail"
+    on_success: always
+    on_failure: always
   irc:
     channels:
       - "chat.freenode.net#manhtu"
