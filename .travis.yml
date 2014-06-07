@@ -7,7 +7,7 @@ before_install:
   - if [ "$CXX" = "g++" ]; then sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y; fi
   - if [ "$CXX" = "g++" ]; then sudo add-apt-repository ppa:ondrej/php5 -y; fi
   - if [ "$CXX" = "g++" ]; then sudo apt-get update -qq; fi
-  - if [ "$CXX" = "g++" ]; then sudo apt-get install g++-4.8, libicu52, icu-devtools, libicu-dev; fi
+  - if [ "$CXX" = "g++" ]; then sudo apt-get install g++-4.8 libicu52 icu-devtools libicu-dev; fi
   - if [ "$CXX" = "g++" ]; then sudo apt-get upgrade -y; fi
   - if [ "$CXX" = "g++" ]; then sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 50; fi
   - if [ "$CXX" = "g++" ]; then sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50; fi
