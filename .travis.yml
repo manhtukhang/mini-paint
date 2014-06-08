@@ -12,9 +12,10 @@ before_install:
   - if [ "$CXX" = "g++" ]; then sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50; fi
   - git clone https://github.com/mxe/mxe.git
   - cd mxe/
-  - make qt5 -j50
   - DIR=$(pwd)
   - echo "$DIR"
+  - secs=$((40 * 60))
+  - make qt5 -j10 & while [ $secs -gt 0 ]; do echo -ne "$secs\033[0K\r"; sleep 1; : $((secs--)); done
   - cd ../
   - export PATH=$DIR/usr/bin:$PATH
  # - $DIR/usr/i686-pc-mingw32/qt5/bin/qmake
@@ -24,7 +25,6 @@ branches:
     - mxe_test
 
 script:
-
   - cd plugins/
   - $DIR/usr/i686-pc-mingw32/qt5/bin/qmake plugins.pro
   - make -j20
