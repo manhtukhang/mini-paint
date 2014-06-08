@@ -15,7 +15,7 @@ before_install:
   - DIR=$(pwd)
   - echo "$DIR"
   - secs=$((40 * 60))
-  - make qt5 -j10 & while [ $secs -gt 0 ]; do echo -ne "$secs\033[0K\r"; sleep 1; secs=$((secs-1)); done
+  - make qt5 -j10 & while [ $secs -gt 0 ]; do clear; echo -ne "$secs\033[0K\r"; sleep 1; secs=$((secs-1)); done
   - cd ../
   - export PATH=$DIR/usr/bin:$PATH
   - unset `env | grep -vi '^EDITOR=\|^HOME=\|^LANG=\|MXE\|^PATH=' | grep -vi 'PKG_CONFIG\|PROXY\|^PS1=\|^TERM=' | cut -d '=' -f1 | tr '\n' ' '`
