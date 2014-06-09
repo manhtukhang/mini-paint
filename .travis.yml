@@ -4,22 +4,22 @@ compiler:
   # - clang
 
 before_install:
-  - if [ "$CXX" = "g++" ]; then sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y; fi
-  - if [ "$CXX" = "g++" ]; then sudo add-apt-repository ppa:ondrej/php5 -y; fi
-  - if [ "$CXX" = "g++" ]; then sudo apt-get update -qq; fi
-  - if [ "$CXX" = "g++" ]; then sudo apt-get install g++-4.8 libboost-regex-dev zip autopoint autoconf automake bash bison bzip2 cmake flex gettext git g++ gperf intltool libffi-dev libtool libltdl-dev libssl-dev libxml-parser-perl make openssl patch perl pkg-config python ruby scons sed unzip wget xz-utils g++-multilib libc6-dev-i386 -y; fi
-  - if [ "$CXX" = "g++" ]; then sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 50; fi
-  - if [ "$CXX" = "g++" ]; then sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50; fi
-  - git clone -b stable https://github.com/mxe/mxe.git
-  - cd mxe/
+  # - if [ "$CXX" = "g++" ]; then sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y; fi
+  # - if [ "$CXX" = "g++" ]; then sudo add-apt-repository ppa:ondrej/php5 -y; fi
+  # - if [ "$CXX" = "g++" ]; then sudo apt-get update -qq; fi
+  # - if [ "$CXX" = "g++" ]; then sudo apt-get install g++-4.8 libboost-regex-dev zip autopoint autoconf automake bash bison bzip2 cmake flex gettext git g++ gperf intltool libffi-dev libtool libltdl-dev libssl-dev libxml-parser-perl make openssl patch perl pkg-config python ruby scons sed unzip wget xz-utils g++-multilib libc6-dev-i386 -y; fi
+  # - if [ "$CXX" = "g++" ]; then sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 50; fi
+  # - if [ "$CXX" = "g++" ]; then sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50; fi
+  - git clone -b bin https://github.com/mxe/mxe.git $HOME/mxe
+  - cd $HOME/mxe
   - DIR=$(pwd)
-  - echo "$DIR"
-  - secs=$((40 * 60))
-  - make qt5 -j10 & while [ $secs -gt 0 ]; do clear; echo -ne "$secs\033[0K\r"; sleep 1; secs=$((secs-1)); done
-  - cd ../
+  # - echo "$DIR"
+  # - secs=$((40 * 60))
+  # - make qt5 -j10 & while [ $secs -gt 0 ]; do clear; echo -ne "$secs\033[0K\r"; sleep 1; secs=$((secs-1)); done
+  # - cd ../
   - export PATH=$DIR/usr/bin:$PATH
   - unset `env | grep -vi '^EDITOR=\|^HOME=\|^LANG=\|MXE\|^PATH=' | grep -vi 'PKG_CONFIG\|PROXY\|^PS1=\|^TERM=' | cut -d '=' -f1 | tr '\n' ' '`
- # - $DIR/usr/i686-pc-mingw32/qt5/bin/qmake
+  # - $DIR/usr/i686-pc-mingw32/qt5/bin/qmake
 
 branches:
   only:
@@ -28,11 +28,16 @@ branches:
 script:
   - cd plugins/
   - $DIR/usr/i686-pc-mingw32/qt5/bin/qmake plugins.pro
-  - make -j20
+  - make -j 10
+  - make clean
   - cd ../
   - $DIR/usr/i686-pc-mingw32/qt5/bin/qmake mini-paint.pro
-  - make -j20
+  - make -j 10
+  - make clean
+
+after_success:
   - ls -a
+
 notifications:
   email:
     recipients:
