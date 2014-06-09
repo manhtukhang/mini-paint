@@ -1,29 +1,39 @@
 language: cpp
 compiler:
   - gcc
-  # - clang
+  - clang
 
 before_install:
   - if [ "$CXX" = "g++" ]; then sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y; fi
-  - if [ "$CXX" = "g++" ]; then sudo add-apt-repository ppa:ondrej/php5 -y; fi
-  - if [ "$CXX" = "g++" ]; then sudo apt-get update -qq; fi
-  - if [ "$CXX" = "g++" ]; then sudo apt-get install g++-4.8 libboost-regex-dev zip -y; fi
-  # - if [ "$CXX" = "g++" ]; then sudo apt-get upgrade -y; fi
+  - sudo add-apt-repository ppa:ondrej/php5 -y
+  - sudo apt-get update -qq
+  - sudo apt-get upgrade -y
+
+install:
+  - if [ "$CXX" = "g++" ]; then sudo apt-get install g++-4.8 -y; fi
   - if [ "$CXX" = "g++" ]; then sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 50; fi
   - if [ "$CXX" = "g++" ]; then sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50; fi
-  - wget -O Qt5.3.0.tar.xz https://db.tt/56yg44N7
+  - sudo apt-get install libboost-regex-dev tree p7zip-full -y
+
+before_script:
+  - wget -O ~/Qt5.3.0.tar.xz https://db.tt/56yg44N7
   - mkdir ~/Qt5.3.0
-  - tar -xJf Qt5.3.0.tar.xz -C ~/Qt5.3.0
+  - tar -xJf ~/Qt5.3.0.tar.xz -C ~/Qt5.3.0
   - sudo chmod -R 777 ~/Qt5.3.0/
   - ln -s ~/Qt5.3.0/gcc_64/mkspecs/linux-g++ ~/Qt5.3.0/gcc_64/mkspecs/linux-gcc
 
 script:
   - cd plugins
   - ~/Qt5.3.0/gcc_64/bin/qmake -Wall plugins.pro
-  - make -j10
+  - make -j 10
+  - make clean
   - cd ..
   - ~/Qt5.3.0/gcc_64/bin/qmake -Wall mini-paint.pro
-  - make -j10
+  - make -j 10
+  - make clean
+
+after_success:
+  - tree
 
 notifications:
   email:
