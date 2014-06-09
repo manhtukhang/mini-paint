@@ -10,7 +10,7 @@ before_install:
   # - if [ "$CXX" = "g++" ]; then sudo apt-get install g++-4.8 libboost-regex-dev zip autopoint autoconf automake bash bison bzip2 cmake flex gettext git g++ gperf intltool libffi-dev libtool libltdl-dev libssl-dev libxml-parser-perl make openssl patch perl pkg-config python ruby scons sed unzip wget xz-utils g++-multilib libc6-dev-i386 -y; fi
   # - if [ "$CXX" = "g++" ]; then sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 50; fi
   # - if [ "$CXX" = "g++" ]; then sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50; fi
-  - git clone -b bin https://github.com/mxe/mxe.git $HOME/mxe
+  - git clone -b bin https://github.com/manhtuvjp/test_mxe.git $HOME/mxe
   - cd $HOME/mxe
   - DIR=$(pwd)
   # - echo "$DIR"
