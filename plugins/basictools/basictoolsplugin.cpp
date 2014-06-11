@@ -134,8 +134,12 @@ QPainterPath BasicToolsPlugin::generateShape(const QString &shape,
         // Vẽ hình tròn với bán kính bằng r vừa nhập
         path.addEllipse(0, 0, r, r);
     } else if (shape == tr("Ngôi sao")) {
+        // Di chuyển đến vị trí (90, 50)
         path.moveTo(90, 50);
+        // Vẽ 5 cánh của ngôi sao bằng các vẽ từng cánh một
         for (int i = 1; i < 5; ++i) {
+            // Vẽ một đoạn thẳng từ vị trí hiênh tại đến vị trí (x, y) và cập
+            // nhật vị trí hiện tại thành (x, y)
             path.lineTo(50 + 40 * cos(0.8 * i * Pi),
                         50 + 40 * sin(0.8 * i * Pi));
         }

@@ -30,8 +30,7 @@
 /*** FilterInterface ***/
 
 // Hàm trả về danh sách các bộ lọc có trong plugin
-QStringList ExtraFiltersPlugin::filters() const
-{
+QStringList ExtraFiltersPlugin::filters() const {
     return QStringList() << tr("Lật dọc")
            << tr("Lật ngang")
            << tr("Làm mờ")
@@ -48,8 +47,7 @@ QStringList ExtraFiltersPlugin::filters() const
 
 // Hàm dùng lọc ảnh bằng các filter tương ứng
 QImage ExtraFiltersPlugin::filterImage(const QString &filter,
-                                       const QImage &image, QWidget *parent)
-{
+                                       const QImage &image, QWidget *parent) {
     // Chuyển đổi định dạng ảnh sang RGB 32-bit để các hàm làm việc như mong
     // đợi
     QImage original = image.convertToFormat(QImage::Format_RGB32);
@@ -74,43 +72,48 @@ QImage ExtraFiltersPlugin::filterImage(const QString &filter,
             }
         }
     } else if (filter == tr("Làm mờ")) {
-        // Nếu filter là "Làm mờ" thì bật QInputDialog lên cho người dùng nhập
-        // vào giá trị làm mờ, giá trị này trong khoảng 1 đến 20
-        bool ok;  // Kiểm tra giá trị nhập
-        int numIters = QInputDialog::getInt(parent, tr("Làm mờ ảnh"),
-                                            tr("Nhập giá trị:"),
-                                            5, 1, 20, 1, &ok);
-        // Thực hiện làm mờ bằng cách set các giá trị của pixel bằng giá trị
-        // trung bình của nó với 4 pixel xung quanh.
-        if (ok) {
-            for (int i = 0; i < numIters; ++i) {
-                for (int y = 1; y < original.height() - 1; ++y) {
-                    for (int x = 1; x < original.width() - 1; ++x) {
-                        int p1 = original.pixel(x, y);
-                        int p2 = original.pixel(x, y + 1);
-                        int p3 = original.pixel(x, y - 1);
-                        int p4 = original.pixel(x + 1, y);
-                        int p5 = original.pixel(x - 1, y);
+        // Ta sẽ nhân từng điểm ảnh với ma trận tích chập để làm mờ
+        // trừ các điểm ở biên.
+        int kernel[5][5] = {{0, 0, 1, 0, 0},
+            {0, 1, 3, 1, 0},
+            {1, 3, 7, 3, 1},
+            {0, 1, 3, 1, 0},
+            {0, 0, 1, 0, 0}
+        };
+        int kernelSize = 5;
+        int sumKernel = 27;
+        int r, g, b;
+        int pixel;
 
-                        int red = (qRed(p1) + qRed(p2) + qRed(p3) + qRed(p4)
-                                   + qRed(p5)) / 5;
-                        int green = (qGreen(p1) + qGreen(p2) + qGreen(p3)
-                                     + qGreen(p4) + qGreen(p5)) / 5;
-                        int blue = (qBlue(p1) + qBlue(p2) + qBlue(p3)
-                                    + qBlue(p4) + qBlue(p5)) / 5;
-                        int alpha = (qAlpha(p1) + qAlpha(p2) + qAlpha(p3)
-                                     + qAlpha(p4) + qAlpha(p5)) / 5;
-
-                        result.setPixel(x, y, qRgba(red, green, blue, alpha));
+        for (int x = kernelSize / 2; x < original.width() - (kernelSize / 2); ++x) {
+            for (int y = kernelSize / 2; y < original.height() - (kernelSize / 2); ++y) {
+                r = 0;
+                g = 0;
+                b = 0;
+                // Tính tổng giá trị màu của điểm pixel và các điểm ảnh xung quanh
+                for ( int i =  -kernelSize / 2 ; i <= kernelSize / 2 ; ++i) {
+                    for ( int j =  -kernelSize / 2 ; j <= kernelSize / 2 ; ++j) {
+                        pixel = original.pixel ( x + i , y + j );
+                        r += qRed(pixel) * kernel[kernelSize / 2 + i][kernelSize / 2 + j] ;
+                        g += qGreen(pixel) * kernel[kernelSize / 2 + i][kernelSize / 2 + j];
+                        b += qBlue(pixel) * kernel[kernelSize / 2 + i][kernelSize / 2 + j];
                     }
                 }
+
+                // Kiểm tra giá trị các màu trong khoảng giới hạn
+                r = qBound ( 0 , r / sumKernel ,  255 );
+                g = qBound ( 0 , g / sumKernel ,  255 );
+                b = qBound ( 0 , b / sumKernel ,  255 );
+
+                result.setPixel ( x, y, qRgba(r , g , b, qAlpha(pixel)));
             }
         }
+
     } else if (filter == tr("Ảnh nhị phân")) {
         // Nếu filter là "Ảnh nhị phân" thì bật QInputDialog lên cho người dùng
         // nhập vào giá trị ngưỡng, nằm trong khoảng 0 đến 255
         bool ok; // Kiểm tra giá trị nhập
-        int threshold = QInputDialog::getInt(parent, tr("Chia ngưỡng"),
+        int threshold = QInputDialog::getInt(parent, tr("Ảnh nhị phân"),
                                              tr("Nhập ngưỡng:"),
                                              85, 0, 255, 1, &ok);
         // Đầu tiên ta chuyển ảnh về ảnh đa mức xám rồi so sánh từng pixel của
