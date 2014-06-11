@@ -75,7 +75,7 @@ _Chú ý đến trạng thái biên dịch, nếu thành công thì có thể an
 
 + Linux [![Build Status](https://drone.io/github.com/manhtuvjp/mini-paint/status.png)](https://drone.io/github.com/manhtuvjp/mini-paint/latest)
  - Thư viện thực thi Qt5.3: [Qt5.3.0.tar.xz](https://db.tt/56yg44N7)
- - Chương trình: [MiniPaint_v0.1.0.Linux.zip](https://drone.io/github.com/manhtuvjp/mini-paint/files/minipaint_v0.1.zip)
+ - Chương trình: [MiniPaint_v0.1.0.Linux.zip](https://drone.io/github.com/manhtuvjp/mini-paint/files/minipaint_v0.1.0_Linux.zip)
 
 + Windows [![Build Status](https://travis-ci.org/manhtuvjp/mxe-paint.svg?branch=master)](https://travis-ci.org/manhtuvjp/mxe-paint)
  - Chương trình (đã có sẵn thư viện): [MiniPaint_v0.1.0_Windows.zip](https://db.tt/CHDB4wY8)
