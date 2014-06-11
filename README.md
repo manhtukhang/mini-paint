@@ -17,9 +17,6 @@ _Dự án được biên dịch tự động mỗi khi có thay đổi để bi�
 
 - [Hướng dẫn biên dịch](#huong-dan-bien-dich)
     - [Linux](#linux)
-        - [Thư viện Qt](#thu-vien-qt)
-        - [Trình biên dịch GCC](#trinh-bien-dich-gcc)
-        - [Biên dịch](#bien-dich)
     - [Windows](#windows)
 - [Tải về](#tai-ve)
 - [Tác giả](#tac-gia)
@@ -44,8 +41,6 @@ _Dự án được biên dịch tự động mỗi khi có thay đổi để bi�
 ## Linux
 
 ### Thư viện Qt:
-
-#### Tải về:
 [Qt5.3.0.tar.xz](https://db.tt/56yg44N7)
 
 #### Cài đặt:
@@ -80,7 +75,7 @@ Người dùng Windows có thể tải QtCreator tại đây để biên dịch 
 
 Tuy nhiên dung lượng tải về lớn và cài đặt khá mất thời gian nên nhóm phát triển đã biên dịch sẵn và kèm theo thư viện thực thi cho chương trình. Xem mục [Tải về](tai-ve) sau
 
-# Tải về
+# Tải về (#tai-ve)
 _Chú ý đến trạng thái biên dịch, nếu thành công thì có thể an tâm tải về_  
 
 ### Linux [![Build Status](https://drone.io/github.com/manhtuvjp/mini-paint/status.png)](https://drone.io/github.com/manhtuvjp/mini-paint/latest)
@@ -90,7 +85,7 @@ _Chú ý đến trạng thái biên dịch, nếu thành công thì có thể an
 ### Windows [![Build Status](https://travis-ci.org/manhtuvjp/mxe-paint.svg?branch=master)](https://travis-ci.org/manhtuvjp/mxe-paint)
  - Chương trình: [MiniPaint_v01.0_Windows.zip](https://db.tt/CHDB4wY8)
 
-# Tác giả
+# Tác giả (#tac-gia)
 Tác giả:
 - Khang Mạnh Tử [@MT](manhtuvjp@gmail.com)
 - Võ Hoài Phong [@phongchicken](hoaiphong95@gmail.com)
