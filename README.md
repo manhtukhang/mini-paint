@@ -64,9 +64,9 @@ Chạy các lệnh sau để biên dịch:
 *Sau khi biên dịch thành công có thể copy 2 tệp `minipaint-v1.0` và `extrafilters.so` vào cùng 1 thư mục để chạy*
 
 ## Windows
-Người dùng Windows có thể tải QtCreator tại đây để biên dịch chương trình:
+### Tải về và cài đặt QtCreator
+Người dùng Windows có thể tải QtCreator cho Windowstại đây để biên dịch chương trình:
 [QtCreator download](http://qt-project.org/downloads)
-Chỉ cần dùng QtCreator để mở các file `plugins.pro` trong thư mục plugins và `mini-paint.pro` trong thư mục gốc và biên dịch, sau đó copy tệp libextrafilter.dll vào cùng thư mục với tệp thực thi `minipaint_v0.1.exe`
 
 Tuy nhiên dung lượng tải về lớn và cài đặt khá mất thời gian nên nhóm phát triển đã biên dịch sẵn và kèm theo thư viện thực thi cho chương trình. Xem mục [Tải về](#tải-về) sau
 
